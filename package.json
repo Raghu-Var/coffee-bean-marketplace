@@ -25,5 +25,8 @@
     "ecommerce"
   ],
   "author": "Your Name",
+  "engines": {
+    "node": "14.x"
+  },
   "license": "MIT"
 }
