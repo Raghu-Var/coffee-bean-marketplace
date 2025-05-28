@@ -1,8 +1,20 @@
+
 import React, { useState } from "react";
 import {
-  Container, Typography, Box, Button, MenuItem, Select, InputLabel, FormControl, Card, CardMedia, CardContent, CardActions, TextField, Snackbar, Alert
-} from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+  Container,
+  Title,
+  Text,
+  Box,
+  Button,
+  Card,
+  Image,
+  Group,
+  NumberInput,
+  Notification,
+  Select as MantineSelect,
+  rem
+} from "@mantine/core";
+import { IconShoppingCart } from "@tabler/icons-react";
 
 const beanTypes = [
   { name: "Arabica", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" },
@@ -63,155 +75,140 @@ function App() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h3" align="center" gutterBottom fontWeight="bold">
-        Coffee Bean Marketplace
-      </Typography>
-      <Typography variant="h6" align="center" color="text.secondary" gutterBottom>
+    <Container size="md" px="md" py="xl">
+      <Title order={1} align="center" mb="sm">Coffee Bean Marketplace</Title>
+      <Text align="center" color="dimmed" mb="md">
         Discover, select, and order the world’s finest coffee beans.
-      </Typography>
+      </Text>
 
       {/* Bean Type Selection */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>Select Bean Type</Typography>
-        <Box sx={{ display: "flex", gap: 2 }}>
+      <Box mt="md">
+        <Title order={3} mb="xs">Select Bean Type</Title>
+        <Group spacing="md">
           {beanTypes.map(bt => (
             <Card
               key={bt.name}
-              sx={{
+              shadow={selectedBeanType === bt.name ? "xl" : "sm"}
+              padding="sm"
+              radius="md"
+              withBorder
+              style={{
                 width: 180,
                 border: selectedBeanType === bt.name ? "2px solid #6f4e37" : "1px solid #ccc",
                 cursor: "pointer",
-                boxShadow: selectedBeanType === bt.name ? 6 : 1,
                 transition: "box-shadow 0.2s"
               }}
               onClick={() => setSelectedBeanType(bt.name)}
             >
-              <CardMedia component="img" height="120" image={bt.img} alt={bt.name} />
-              <CardContent>
-                <Typography variant="subtitle1" align="center">{bt.name}</Typography>
-              </CardContent>
+              <Image src={bt.img} height={120} alt={bt.name} radius="md" />
+              <Text align="center" mt="xs" weight={500}>{bt.name}</Text>
             </Card>
           ))}
-        </Box>
+        </Group>
       </Box>
 
       {/* Region Selection */}
       {selectedBeanType && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" gutterBottom>Select Coffee Growing Region</Typography>
-          <FormControl fullWidth>
-            <InputLabel>Region</InputLabel>
-            <Select
-              value={selectedRegion}
-              label="Region"
-              onChange={e => {
-                setSelectedRegion(e.target.value);
-                setSelectedVendor("");
-                setSelectedBean("");
-              }}
-            >
-              {regions.map(r => (
-                <MenuItem key={r.name} value={r.name}>{r.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <Box mt="md">
+          <Title order={3} mb="xs">Select Coffee Growing Region</Title>
+          <MantineSelect
+            data={regions.map(r => ({ value: r.name, label: r.name }))}
+            value={selectedRegion}
+            onChange={value => {
+              setSelectedRegion(value || "");
+              setSelectedVendor("");
+              setSelectedBean("");
+            }}
+            placeholder="Pick a region"
+          />
         </Box>
       )}
 
       {/* Vendor Selection */}
       {selectedRegion && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" gutterBottom>Select Vendor/Estate</Typography>
-          <FormControl fullWidth>
-            <InputLabel>Vendor/Estate</InputLabel>
-            <Select
-              value={selectedVendor}
-              label="Vendor/Estate"
-              onChange={e => {
-                setSelectedVendor(e.target.value);
-                setSelectedBean("");
-              }}
-            >
-              {regions.find(r => r.name === selectedRegion).vendors.map(v => (
-                <MenuItem key={v} value={v}>{v}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <Box mt="md">
+          <Title order={3} mb="xs">Select Vendor/Estate</Title>
+          <MantineSelect
+            data={regions.find(r => r.name === selectedRegion)?.vendors.map(v => ({ value: v, label: v })) || []}
+            value={selectedVendor}
+            onChange={value => {
+              setSelectedVendor(value || "");
+              setSelectedBean("");
+            }}
+            placeholder="Pick a vendor/estate"
+          />
         </Box>
       )}
 
       {/* Bean Selection */}
       {selectedVendor && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" gutterBottom>Select Exact Beans</Typography>
-          <Box sx={{ display: "flex", gap: 2 }}>
+        <Box mt="md">
+          <Title order={3} mb="xs">Select Exact Beans</Title>
+          <Group spacing="md">
             {beans[selectedVendor].map(b => (
               <Card
                 key={b.name}
-                sx={{
+                shadow={selectedBean === b.name ? "xl" : "sm"}
+                padding="sm"
+                radius="md"
+                withBorder
+                style={{
                   width: 200,
                   border: selectedBean === b.name ? "2px solid #6f4e37" : "1px solid #ccc",
                   cursor: "pointer",
-                  boxShadow: selectedBean === b.name ? 6 : 1,
                   transition: "box-shadow 0.2s"
                 }}
                 onClick={() => setSelectedBean(b.name)}
               >
-                <CardMedia component="img" height="120" image={b.img} alt={b.name} />
-                <CardContent>
-                  <Typography variant="subtitle1" align="center">{b.name}</Typography>
-                  <Typography variant="body2" align="center" color="text.secondary">${b.price}/kg</Typography>
-                </CardContent>
+                <Image src={b.img} height={120} alt={b.name} radius="md" />
+                <Text align="center" mt="xs" weight={500}>{b.name}</Text>
+                <Text align="center" size="sm" color="dimmed">${b.price}/kg</Text>
               </Card>
             ))}
-          </Box>
+          </Group>
         </Box>
       )}
 
       {/* Quantity and Add to Cart */}
       {selectedBean && (
-        <Box sx={{ mt: 4, display: "flex", alignItems: "center", gap: 2 }}>
-          <TextField
+        <Group mt="md" align="center">
+          <NumberInput
             label="Quantity (kg)"
-            type="number"
             value={quantity}
-            onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-            inputProps={{ min: 1 }}
-            sx={{ width: 150 }}
+            onChange={val => setQuantity(Number(val) || 1)}
+            min={1}
+            style={{ width: 150 }}
           />
           <Button
-            variant="contained"
-            color="primary"
-            startIcon={<ShoppingCartIcon />}
+            leftSection={<IconShoppingCart size={18} />}
+            color="brown"
             onClick={handleAddToCart}
-            sx={{ bgcolor: "#6f4e37", "&:hover": { bgcolor: "#5a3c23" } }}
+            style={{ backgroundColor: "#6f4e37" }}
           >
             Add to Cart
           </Button>
-        </Box>
+        </Group>
       )}
 
       {/* Cart */}
       {cart.length > 0 && (
-        <Box sx={{ mt: 6 }}>
-          <Typography variant="h5" gutterBottom>Your Cart</Typography>
+        <Box mt="xl">
+          <Title order={3} mb="xs">Your Cart</Title>
           {cart.map((item, idx) => (
-            <Card key={idx} sx={{ mb: 2, display: "flex", alignItems: "center" }}>
-              <CardMedia component="img" image={item.img} alt={item.name} sx={{ width: 80, height: 80 }} />
-              <CardContent sx={{ flex: 1 }}>
-                <Typography>{item.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
+            <Card key={idx} mb="sm" style={{ display: "flex", alignItems: "center" }}>
+              <Image src={item.img} alt={item.name} width={80} height={80} radius="md" />
+              <Box ml="md" style={{ flex: 1 }}>
+                <Text>{item.name}</Text>
+                <Text size="sm" color="dimmed">
                   {item.quantity} kg × ${item.price} = ${item.quantity * item.price}
-                </Typography>
-              </CardContent>
+                </Text>
+              </Box>
             </Card>
           ))}
           <Button
-            variant="contained"
-            color="success"
+            color="green"
+            mt="md"
             onClick={handleCheckout}
-            sx={{ mt: 2 }}
           >
             Checkout
           </Button>
@@ -220,25 +217,22 @@ function App() {
 
       {/* Order Tracking */}
       {orderPlaced && (
-        <Box sx={{ mt: 6 }}>
-          <Alert severity="success">
-            <Typography variant="h6">Order placed!</Typography>
-            <Typography>Your order is being processed. <b>Tracking #: 123456</b></Typography>
-          </Alert>
+        <Box mt="xl">
+          <Notification color="green" title="Order placed!" onClose={() => setOrderPlaced(false)}>
+            Your order is being processed. <b>Tracking #: 123456</b>
+          </Notification>
         </Box>
       )}
 
       {/* Snackbar for Add to Cart */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={2000}
+      <Notification
+        color="teal"
+        title="Added to cart!"
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        style={{ position: "fixed", bottom: rem(24), left: "50%", transform: "translateX(-50%)", display: snackbarOpen ? "block" : "none", zIndex: 9999 }}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
-          Added to cart!
-        </Alert>
-      </Snackbar>
+        Added to cart!
+      </Notification>
     </Container>
   );
 }
