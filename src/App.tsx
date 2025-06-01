@@ -19,27 +19,6 @@ import {
   useToastController
 } from "@fluentui/react-components";
 import { ShoppingCart24Regular } from '@fluentui/react-icons';
-import {
-  FluentProvider,
-  webLightTheme,
-  Card,
-  CardHeader,
-  CardPreview,
-  CardFooter,
-  Button,
-  Text,
-  Title1,
-  Title3,
-  Subtitle1,
-  Input,
-  Select,
-  Field,
-  Toaster,
-  useToastController,
-  makeStyles,
-  shorthands
-} from "@fluentui/react-components";
-import { ShoppingCart24Regular } from '@fluentui/react-icons';
 
 const beanTypes = [
   { name: "Arabica", img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" },
